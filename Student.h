@@ -5,9 +5,12 @@ private:
 	float timeArrived;
 	float timeWaited;
 	float timeAtWindow;
+
 	
 
 public: 
+
+	int id;
 
 	Student();
 	Student(float tArrived, float tWindow);
@@ -38,9 +41,7 @@ Student:: Student(float tArrived, float tWindow)
 }
 Student:: ~Student()
 {
-	delete timeArrived;
-	delete timeWaited;
-	delete timeAtWindow;
+
 }
 void Student:: setTimeArrived(float arrived)
 {

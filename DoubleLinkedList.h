@@ -1,62 +1,46 @@
+
+#ifndef INTNODE_H
+#define INTNODE_H
+
+#include "IntNode.h"
 //___________________________________
 //
 //DECLARATION
 //___________________________________
 using namespace std;
-
-class IntNode
-{
-public:
-	int data;
-
-	IntNode(int d);
-	~IntNode();
-
-	IntNode *next;
-	IntNode *prev;
-
-};
+template <typename type>
 class DoubleLinkedList
 {
 public:
-	IntNode *front;
-	IntNode *back;
+	IntNode<type> *front;
+	IntNode<type> *back;
 	int size;
 
 	DoubleLinkedList();
 	~DoubleLinkedList();
 
-	void insertFront(int data);
-	void insertBack(int data);
-	int removeFront();
-	int removeBack();
+	void insertFront(type data);
+	void insertBack(type data);
+	type removeFront();
+	type removeBack();
 	bool isEmpty();
-	int getFront();
-	int getBack();
+	type getFront();
+	type getBack();
 };
 
 //___________________________________
 //
 //IMPLEMENTATION
 //___________________________________
-
-IntNode:: IntNode(int d)
-{
-	data = d;
-	next = NULL;
-	prev = NULL;
-}
-IntNode:: ~IntNode()
-{
-
-}
-DoubleLinkedList:: DoubleLinkedList()
+template <typename type>
+DoubleLinkedList<type>:: DoubleLinkedList()
 {
 	size = 0;
 	front = NULL;
 	back = NULL;
 }
-DoubleLinkedList:: ~DoubleLinkedList()
+template <typename type>
+DoubleLinkedList<type>:: ~DoubleLinkedList()
 {
 	while(!isEmpty())
 	{
@@ -66,10 +50,11 @@ DoubleLinkedList:: ~DoubleLinkedList()
 	delete back;
 	
 }
-void DoubleLinkedList:: insertBack(int data)
+template <typename type>
+void DoubleLinkedList<type>:: insertBack(type data)
 {
 	++size;
-	IntNode *node = new IntNode(data);
+	IntNode<type> *node = new IntNode<type>(data);
 	//if empty then create it
 	if(isEmpty())
 	{
@@ -79,7 +64,7 @@ void DoubleLinkedList:: insertBack(int data)
 	//if not empty then find node that pointer is null
 	else
 	{
-		IntNode *current = back;
+		IntNode<type> *current = back;
 		back = node;
 		current->next = node;
 		back->prev = current;
@@ -87,10 +72,11 @@ void DoubleLinkedList:: insertBack(int data)
 		delete current;
 	}
 }
-void DoubleLinkedList:: insertFront(int data)
+template <typename type>
+void DoubleLinkedList<type>:: insertFront(type data)
 {
 	++size;
-	IntNode *node = new IntNode(data);
+	IntNode<type> *node = new IntNode<type>(data);
 	//if empty then create it
 	if(isEmpty())
 	{
@@ -100,7 +86,7 @@ void DoubleLinkedList:: insertFront(int data)
 	//if not empty then find node that pointer is null
 	else
 	{
-		IntNode *current = front;
+		IntNode<type> *current = front;
 		front = node;
 		current->prev = node;
 		front->prev = NULL;
@@ -108,7 +94,8 @@ void DoubleLinkedList:: insertFront(int data)
 		delete current;
 	}
 }
-int DoubleLinkedList:: removeFront()
+template <typename type>
+type DoubleLinkedList<type>:: removeFront()
 {
 	if(isEmpty())
 	{
@@ -122,16 +109,17 @@ int DoubleLinkedList:: removeFront()
 	{
 		front->next->prev = NULL;
 	}
-	IntNode *current = front;
+	IntNode<type> *current = front;
 	front = front->next;
 	front->prev = NULL;
 	
-	int data =  current->data;
+	type data =  current->data;
 	delete current;
 	--size;
 	return data;
 }
-int DoubleLinkedList:: removeBack()
+template <typename type>
+type DoubleLinkedList<type>:: removeBack()
 {
 	if(isEmpty())
 	{
@@ -146,33 +134,36 @@ int DoubleLinkedList:: removeBack()
 		back->prev->next = NULL;
 	}
 
-	IntNode *current = back;
+	IntNode<type> *current = back;
 	back = back->prev;
 	back->prev = NULL;
 	
-	int data =  current->data;
+	type data =  current->data;
 	delete current;
 	--size;
 	return data;
 }
-bool DoubleLinkedList:: isEmpty()
+template <typename type>
+bool DoubleLinkedList<type>:: isEmpty()
 {
 	if(size == 0)
 		return true;
 	return false;
 }
-int DoubleLinkedList:: getFront()
+template <typename type>
+type DoubleLinkedList<type>:: getFront()
 {
 	if(front != NULL)
 		return front->data;
 	return -1;
 }
-int DoubleLinkedList:: getBack()
+template <typename type>
+type DoubleLinkedList<type>:: getBack()
 {
 	if(back != NULL)
 	 return back->data;
 	return -1;
 }
 
-
+#endif
 
