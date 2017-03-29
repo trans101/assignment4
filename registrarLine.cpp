@@ -1,17 +1,13 @@
-#ifndef DLISTQUEUE_H
-#ifndef DOUBLELINKEDLIST_H
-#ifndef INTNODE_H
-#define DLISTQUEUE_H
-#define DOUBLELINKEDLIST_H
-#define INTNODE_H
-#include "DListQueue.h"
-#include "Student.h"
-#include "DoubleLinkedList.h"
-#include "IntNode.h"
 
+#include "IntNode.h"
+#include "Student.h"
+#include "DListQueue.h"
+#include "DoubleLinkedList.h"
 #include <iostream>
 #include <fstream>
 #include <string>
+
+
 
 using namespace std;
 
@@ -21,12 +17,11 @@ int main(int argc, char** argv)
 	int shortWaitTime(0);
 
 	//info variables
-	int windowsOpen(0), timeArrived(0), studArriving(0), timeAtWindow(0), waitTime(0);
+	int windowsOpen(0), timeArrived(0), studArriving(0), timeAtWindow(0);
 	//measure variables
 	float meanWT, medianWT;
 
-
-	DListQueue<Student> line = new DListQueue();
+	DListQueue<Student> *line;
 
 	string filePath, fileLine;
 	ifstream givenFile;
@@ -59,45 +54,43 @@ int main(int argc, char** argv)
 			++studCount;
 			Student *student = new Student();
 			student->id = studCount;
-			student.setTimeArrived(timeArrived)
+			student->setTimeArrived(timeArrived);
 
 			getline(givenFile, fileLine);
 			timeAtWindow = stoi(fileLine);
 
-			student.setTimeAtWindow(timeAtWindow);	
+			student->setTimeAtWindow(timeAtWindow);	
 
 			if(timeAtWindow < shortWaitTime)
 				shortWaitTime = timeAtWindow;
 
 			if(i <= windowsOpen)
 			{
-				student.setTimeWaited(0);
+				student->setTimeWaited(0);
 			}
 			else
 			{
 				if(shortWaitTime != 0)
 				{
-					float timeWaited= student.getTimeArrived() + shortWaitTime;
-					student.setTimeWaited();
+					float timeWaited= student->getTimeArrived() + shortWaitTime;
+					student->setTimeWaited(timeWaited);
 				}
 
 			}
-
-			line.insertBack(student);
+			line->insertBack(*student);
+		
 			shortWaitTime = 0;
 
 		}
 	}
 
 	float waitTime[studCount];
+	for(int i = 0; i < studCount; ++i)
+	{
+		Student *s = line->removeFront();
+		waitTime[i] = s->getTimeWaited();
+	}
 
 
-
-
-	
 	return 0;
 }
-
-#endif
-#endif
-#endif

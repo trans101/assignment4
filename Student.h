@@ -1,3 +1,5 @@
+#include <iostream>
+using namespace std;
 class Student
 {
 
@@ -5,8 +7,6 @@ private:
 	float timeArrived;
 	float timeWaited;
 	float timeAtWindow;
-
-	
 
 public: 
 

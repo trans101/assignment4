@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-template <typename type>
+template <class type>
 class DListQueue
 {
 public:
@@ -30,60 +30,60 @@ public:
 };
 
 
-template <typename type>
+template <class type>
 DListQueue<type>::DListQueue()
 {
 	myQueue = new DoubleLinkedList<type>();
 	numElements = 0;
 }
-template <typename type>
+template <class type>
 DListQueue<type>::DListQueue(int max)
 {	
 	myQueue = new DoubleLinkedList<type>();
 	numElements = 0;
 	mSize = max;
 }
-template <typename type>
+template <class type>
 DListQueue<type>::~DListQueue()
 {
 	//delete stuff
 	delete myQueue;
 }
-template <typename type>
+template <class type>
 void DListQueue<type>:: insertBack(type data)
 {
-	myQueue.insertBack(data);
+	myQueue->insertBack(data);
 	++numElements;
 }
-template <typename type>
+template <class type>
 type DListQueue<type>::removeFront()
 {
-	myQueue.removeFront();
+	myQueue->removeFront();
 	--numElements;
 }
-template <typename type>
+template <class type>
 type DListQueue<type>::peekFront()
 {
-	myQueue.getFront();
+	myQueue->getFront();
 }
-template <typename type>
+template <class type>
 type DListQueue<type>::peekBack()
 {
-	myQueue.getBack();
+	myQueue->getBack();
 }
-template <typename type>
+template <class type>
 int DListQueue<type>::getSize()
 {
 	if(myQueue->size != numElements)
 		return -1;
 	return numElements;
 }
-template <typename type>
+template <class type>
 bool DListQueue<type>::isFull()
 {
 	return (numElements == mSize);	
 }
-template <typename type>
+template <class type>
 bool DListQueue<type>::isEmpty()
 {
 	return (numElements == 0);

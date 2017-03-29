@@ -2,15 +2,16 @@
 #ifndef INTNODE_H
 #define INTNODE_H
 
-#include "IntNode.h"
+//#include "IntNode.h"
 //___________________________________
 //
 //DECLARATION
 //___________________________________
 using namespace std;
-template <typename type>
+template <class type>
 class DoubleLinkedList
 {
+
 public:
 	IntNode<type> *front;
 	IntNode<type> *back;
@@ -32,14 +33,14 @@ public:
 //
 //IMPLEMENTATION
 //___________________________________
-template <typename type>
+template <class type>
 DoubleLinkedList<type>:: DoubleLinkedList()
 {
 	size = 0;
 	front = NULL;
 	back = NULL;
 }
-template <typename type>
+template <class type>
 DoubleLinkedList<type>:: ~DoubleLinkedList()
 {
 	while(!isEmpty())
@@ -50,7 +51,7 @@ DoubleLinkedList<type>:: ~DoubleLinkedList()
 	delete back;
 	
 }
-template <typename type>
+template <class type>
 void DoubleLinkedList<type>:: insertBack(type data)
 {
 	++size;
@@ -72,7 +73,7 @@ void DoubleLinkedList<type>:: insertBack(type data)
 		delete current;
 	}
 }
-template <typename type>
+template <class type>
 void DoubleLinkedList<type>:: insertFront(type data)
 {
 	++size;
@@ -94,12 +95,12 @@ void DoubleLinkedList<type>:: insertFront(type data)
 		delete current;
 	}
 }
-template <typename type>
+template <class type>
 type DoubleLinkedList<type>:: removeFront()
 {
 	if(isEmpty())
 	{
-		return -1;
+		return NULL;
 	}
 	else if(size == 1)
 	{
@@ -114,16 +115,16 @@ type DoubleLinkedList<type>:: removeFront()
 	front->prev = NULL;
 	
 	type data =  current->data;
-	delete current;
+	//sdelete current;
 	--size;
 	return data;
 }
-template <typename type>
+template <class type>
 type DoubleLinkedList<type>:: removeBack()
 {
 	if(isEmpty())
 	{
-		return -1;
+		return NULL;
 	}
 	else if(size == 1)
 	{
@@ -139,30 +140,30 @@ type DoubleLinkedList<type>:: removeBack()
 	back->prev = NULL;
 	
 	type data =  current->data;
-	delete current;
+	//delete current;
 	--size;
 	return data;
 }
-template <typename type>
+template <class type>
 bool DoubleLinkedList<type>:: isEmpty()
 {
 	if(size == 0)
 		return true;
 	return false;
 }
-template <typename type>
+template <class type>
 type DoubleLinkedList<type>:: getFront()
 {
 	if(front != NULL)
 		return front->data;
-	return -1;
+	return NULL;
 }
-template <typename type>
+template <class type>
 type DoubleLinkedList<type>:: getBack()
 {
 	if(back != NULL)
 	 return back->data;
-	return -1;
+	return NULL;
 }
 
 #endif
