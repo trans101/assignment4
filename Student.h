@@ -53,7 +53,10 @@ void Student:: setTimeWaited(float waited)
 }
 void Student:: setTimeAtWindow(float windowTime)
 {
+	cout << "went into time at window function" << endl;
+	cout << "window time is " << windowTime << endl;
 	timeAtWindow = windowTime;
+	cout << "ending function" << endl;
 }
 float Student:: getTimeArrived()
 {

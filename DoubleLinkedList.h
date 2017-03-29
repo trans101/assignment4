@@ -100,7 +100,8 @@ type DoubleLinkedList<type>:: removeFront()
 {
 	if(isEmpty())
 	{
-		return NULL;
+		//return NULL;
+		cout << "Error: Can't removeFront() on empty queue." << endl;
 	}
 	else if(size == 1)
 	{

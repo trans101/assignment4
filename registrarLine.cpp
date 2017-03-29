@@ -18,8 +18,6 @@ int main(int argc, char** argv)
 
 	//info variables
 	int windowsOpen(0), timeArrived(0), studArriving(0), timeAtWindow(0);
-	//measure variables
-	float meanWT, medianWT;
 
 	DListQueue<Student> *line;
 
@@ -30,6 +28,7 @@ int main(int argc, char** argv)
 	cin >> filePath;
 
 	givenFile.open(filePath);
+	cout << "Opened file" << endl;
 
 	if(givenFile.fail())
 	{
@@ -38,57 +37,107 @@ int main(int argc, char** argv)
 	}
 
 	getline(givenFile, fileLine);
+	cout << "Got line " << endl;
 	windowsOpen = stoi(fileLine);
 
 	while(!givenFile.eof())
 	{
 
 		getline(givenFile, fileLine);
-		timeArrived = (stoi(fileLine))*60;
+		cout << "line = " << fileLine << endl;
+		timeArrived = stoi(fileLine);
+		timeArrived*=60;
 
-		getline(givenFile, fileLine);
-		studArriving = stoi(fileLine);
-
-		for(int i = 0; i < studArriving; ++i)
+		if(!givenFile.eof())
 		{
-			++studCount;
-			Student *student = new Student();
-			student->id = studCount;
-			student->setTimeArrived(timeArrived);
-
+			cout << "about to get line again" << endl;
 			getline(givenFile, fileLine);
-			timeAtWindow = stoi(fileLine);
+			studArriving = stoi(fileLine);
 
-			student->setTimeAtWindow(timeAtWindow);	
-
-			if(timeAtWindow < shortWaitTime)
-				shortWaitTime = timeAtWindow;
-
-			if(i <= windowsOpen)
+			for(int idx = 0; idx < studArriving; ++idx)
 			{
-				student->setTimeWaited(0);
-			}
-			else
-			{
-				if(shortWaitTime != 0)
+				cout << "index: " << idx << "Stud arriving = " << studArriving << endl;
+				++studCount;
+				cout << "Added one to stud count" << endl;
+				Student *student = new Student();
+				cout << "made a new student" << endl;
+				cout << "about to set id" << endl;
+				student->id = studCount;
+				cout << "hi" << endl;
+				cout << "about to set time arrived" << endl;
+				student->setTimeArrived(timeArrived);
+				cout << "set time arrived " << endl;
+
+				cout << "INDEX " << idx  << endl;
+
+				if(!givenFile.eof())
 				{
-					float timeWaited= student->getTimeArrived() + shortWaitTime;
-					student->setTimeWaited(timeWaited);
+					cout << "about to get another line" << endl;
+					getline(givenFile, fileLine);
+					timeAtWindow = stoi(fileLine);
+					cout << "got another line" << endl;
+					cout << "index is " << idx << endl;
+
+					cout << "time at window: " << timeAtWindow << endl;
+					student->setTimeAtWindow(timeAtWindow);	
+					cout << "Set time at window to " << timeAtWindow <<endl ;
+
+					cout << "short wait time: " << shortWaitTime << endl;
+					cout << "timeAtWindow: " << timeAtWindow << endl;
+
+					
+					if(idx <= windowsOpen-1)
+					{
+						cout << "in if statement" << endl;
+						student->setTimeWaited(0.0);
+
+						if(idx == 0)
+						{
+							shortWaitTime = student->getTimeAtWindow();
+						}
+						else
+						{
+							if(student->getTimeAtWindow() < shortWaitTime)
+							{
+								shortWaitTime = student->getTimeAtWindow();
+							}
+						}
+						
+					}
+
+					//might be +1
+					else if(idx > (windowsOpen-1))
+					{
+						
+					}
+					else
+					{
+						
+						if(shortWaitTime != 0)
+						{
+							float timeWaited= student->getTimeArrived() + shortWaitTime;
+							student->setTimeWaited(timeWaited);
+							cout << cout << "Student " << idx << " time waited is " << timeWaited;
+						}
+					}
+					line->insertBack(*student);
+					cout << "Put student on queue" << endl;
+				
+					shortWaitTime = 0;
 				}
-
 			}
-			line->insertBack(*student);
-		
-			shortWaitTime = 0;
 
+			//reset count of students arriving per hour
 		}
 	}
 
 	float waitTime[studCount];
 	for(int i = 0; i < studCount; ++i)
 	{
-		Student *s = line->removeFront();
-		waitTime[i] = s->getTimeWaited();
+		Student s = line->removeFront();
+		cout << "Removed student" << endl;
+		waitTime[i] = s.getTimeWaited();
+		cout << "put wait time in array" << endl;
 	}
 
 
