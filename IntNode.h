@@ -8,8 +8,8 @@ public:
 	~IntNode();
 
 	type data;
-	IntNode *next;
-	IntNode *prev;
+	IntNode<type> *next;
+	IntNode<type> *prev;
 
 };
 
@@ -17,8 +17,13 @@ template <class type>
 IntNode<type>::IntNode(type d)
 {
 	data = d;
+	next = NULL; 
+	prev = NULL;
+	//for some reason calling the student destructor
+}
+template <class type>
+IntNode<type>::~IntNode()
+{
 	next = NULL;
 	prev = NULL;
 }
-template <class type>
-IntNode<type>::~IntNode(){}

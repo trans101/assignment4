@@ -7,20 +7,31 @@
 #include <fstream>
 #include <string>
 
-
-
 using namespace std;
 
+/*int main(int argc, char** argv)
+{
+	DListQueue<int> *queue = new DListQueue<int>();
+	for(int i = 0; i < 10; ++i)
+	{
+		queue->insertBack(i);
+		cout<< "peek front" << queue->peekBack() << endl;
+	}
+
+	for(int i = 0; i < 10; ++i)
+	{
+		cout << "removed " << queue->removeFront() << endl;
+	}
+	return 0;
+}*/
 int main(int argc, char** argv)
 {
-	int studCount(0);
-	int shortWaitTime(0);
-	int longWaitTime(0);
+	int studCount(0), shortWaitTime(0), longWaitTime(0), longIdleWaitTime(0), idleCount(0);
 	float totalWaitTime(0.0);
 	int overTenCount(0);
 
-	DoubleLinkedList<float> *waitTimes;
-	DoubleLinkedList<float> *idleTimes;
+	DoubleLinkedList<float> *waitTimes = new DoubleLinkedList<float>();
+	DoubleLinkedList<float> *idleTimes = new DoubleLinkedList<float>();
 
 	//info variables
 	int numWindows(0), openWindows(0), timeArrived(0), studArriving(0), timeAtWindow(0);
@@ -28,7 +39,7 @@ int main(int argc, char** argv)
 	int overFiveIdleCount(0);
 
 
-	DListQueue<Student> *line;
+	DListQueue<Student> *line = new DListQueue<Student>();
 
 	string filePath, fileLine;
 	ifstream givenFile;
@@ -46,8 +57,16 @@ int main(int argc, char** argv)
 	}
 
 	getline(givenFile, fileLine);
-	numWindows = stoi(fileLine);
-	openWindows = numWindows;
+	try
+	{
+		numWindows = stoi(fileLine);
+		openWindows = numWindows;
+	}
+	catch (invalid_argument)
+	{
+		return 0;
+	}
+	
 
 	int windowArray[numWindows];
 	int idleWindowArray[numWindows];
@@ -58,20 +77,34 @@ int main(int argc, char** argv)
 	}
 
 	//temp holder variable
-	int hourBefore(0);
-
+	int hourBefore = 0;
 	//new hour
 	while(!givenFile.eof())
 	{
 		getline(givenFile, fileLine);
-		timeArrived = stoi(fileLine);
-
+		try
+		{
+			timeArrived = stoi(fileLine);
+		}
+		catch (invalid_argument)
+		{
+			return 0;
+		}
 
 		if(!givenFile.eof())
 		{
+			//get student ariving
 			getline(givenFile, fileLine);
-			studArriving = stoi(fileLine);
+			try
+			{
+				studArriving = stoi(fileLine);
+			}
+			catch (invalid_argument)
+			{
+				return 0;
+			}
 
+			//if an hour was skipped
 			if((timeArrived - hourBefore) != 1)
 			{
 				//add idle time for all windows because no students came that hour skipped
@@ -80,9 +113,8 @@ int main(int argc, char** argv)
 				{
 					idleWindowArray[i] += time;
 				}
-
 			}
-			else //is = 1
+			else //no hour was skipped
 			{
 				//clear idle times
 				//check if students arriving is less than windows
@@ -110,15 +142,16 @@ int main(int argc, char** argv)
 					}
 				}
 			}
+
 			hourBefore = timeArrived;
 
-
-
+			//make all the students for the queue per hour
 			for(int idx = 0; idx < studArriving; ++idx)
 			{
-				++studCount;
+				
 
 				Student *student = new Student();
+				++studCount;
 
 				student->id = studCount;
 
@@ -128,18 +161,21 @@ int main(int argc, char** argv)
 				{
 
 					getline(givenFile, fileLine);
-					timeAtWindow = stoi(fileLine);
+					try
+					{
+						timeAtWindow = stoi(fileLine);
+					}
+					catch (invalid_argument)
+					{
+						return 0;
+					}
 
 					student->setTimeAtWindow(timeAtWindow);	
 					
-					line->insertBack(*student);
-
-					cout << "finished inserting in main" << endl;
-
+					line->insertBack(*student); //seems like every time you switch back to functions it calls the student destructor
+					cout << "inserted student " << endl;
 				}
 			}
-
-			//reset count of students arriving per hour
 		}
 
 		//still in the hour
@@ -151,6 +187,7 @@ int main(int argc, char** argv)
 			{
 				--openWindows;
 				Student movingStud = line->removeFront();
+				cout << "removed student" << endl;
 				waitTimes->insertBack(0);
 				
 				//getting wait times
@@ -229,8 +266,17 @@ int main(int argc, char** argv)
 		{
 			idleWindowArray[i] += (60 - windowArray[i]);
 			idleTimes->insertBack(idleWindowArray[i]);
-		}
+			++idleCount;
 
+			if(idleWindowArray[i] > longWaitTime)
+			{
+				longIdleWaitTime = idleWindowArray[i];
+			}
+			if(idleWindowArray[i] > 5)
+			{
+				++overFiveIdleCount;
+			}
+		}
 	}
 
 
@@ -251,4 +297,4 @@ int main(int argc, char** argv)
 
 
 	return 0;
-}
+}//end of main

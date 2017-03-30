@@ -1,8 +1,6 @@
 
 #ifndef INTNODE_H
 #define INTNODE_H
-
-//#include "IntNode.h"
 //___________________________________
 //
 //DECLARATION
@@ -27,6 +25,8 @@ public:
 	bool isEmpty();
 	type getFront();
 	type getBack();
+	int getSize();
+	void setSize(int s);
 };
 
 //___________________________________
@@ -36,7 +36,7 @@ public:
 template <class type>
 DoubleLinkedList<type>:: DoubleLinkedList()
 {
-	size = 0;
+	this->size = 0;
 	front = NULL;
 	back = NULL;
 }
@@ -54,37 +54,33 @@ DoubleLinkedList<type>:: ~DoubleLinkedList()
 template <class type>
 void DoubleLinkedList<type>:: insertBack(type data)
 {
-	cout << "in list insert back" << endl;
-	
 	IntNode<type> *node = new IntNode<type>(data);
-	cout << "made node" << endl;
+
 	//if empty then create it
 	if(isEmpty())
 	{
-		cout << "putting first element" << endl;
+
 		front = node;
 		back = node;
+
 	}
 	//if not empty then find node that pointer is null
 	else
 	{
-		cout << "inserting after element" << endl;
+
 		IntNode<type> *current = back;
 		back = node;
 		current->next = node;
 		back->prev = current;
 		back->next = NULL;
-		cout << "put it in" << endl;
-		delete current;
-		cout << "deleted current" << endl;
+
 	}
-	cout << "after both if/else statements" << endl;
-	++size;
+	size++;
 }
 template <class type>
 void DoubleLinkedList<type>:: insertFront(type data)
 {
-	++size;
+
 	IntNode<type> *node = new IntNode<type>(data);
 	//if empty then create it
 	if(isEmpty())
@@ -100,33 +96,48 @@ void DoubleLinkedList<type>:: insertFront(type data)
 		current->prev = node;
 		front->prev = NULL;
 		front->next = current;
-		delete current;
 	}
+	++size;
 }
 template <class type>
 type DoubleLinkedList<type>:: removeFront()
 {
+
+	IntNode<type> *temp = front;
+
+
+	type d;
+
+ 
 	if(isEmpty())
 	{
-		//return NULL;
 		cout << "Error: Can't removeFront() on empty queue." << endl;
+		return temp->data;
+		
 	}
-	else if(size == 1)
+	//multiple items in list
+	else if(temp->next != NULL)
 	{
-		back = front;
+		d = temp->data;
+	
+		front = front->next;
+		front->prev= NULL;
+		delete temp;
+
 	}
+	//only one item of list
 	else
 	{
-		front->next->prev = NULL;
+
+		d = temp->data;
+		front = NULL;
+		back = NULL;
+		delete temp;
+		//now list is empty
 	}
-	IntNode<type> *current = front;
-	front = front->next;
-	front->prev = NULL;
-	
-	type data =  current->data;
-	//sdelete current;
+	//delete current;
 	--size;
-	return data;
+	return d;
 }
 template <class type>
 type DoubleLinkedList<type>:: removeBack()
@@ -156,10 +167,9 @@ type DoubleLinkedList<type>:: removeBack()
 template <class type>
 bool DoubleLinkedList<type>:: isEmpty()
 {
-	cout << "in is empty" << endl;
-	if(front==NULL && back == NULL)
+	if(this->size == 0)
 	{
-		cout << "was empty" << endl;
+		
 		return true;
 	}
 	return false;
@@ -169,14 +179,24 @@ type DoubleLinkedList<type>:: getFront()
 {
 	if(front != NULL)
 		return front->data;
-	return NULL;
+	return 0;
 }
 template <class type>
 type DoubleLinkedList<type>:: getBack()
 {
 	if(back != NULL)
-	 return back->data;
-	return NULL;
+		return back->data;
+	return 0;
+}
+template <class type>
+int DoubleLinkedList<type>::getSize()
+{
+	return this->size;
+}
+template <class type>
+void DoubleLinkedList<type>::setSize(int s)
+{
+	this->size = s;
 }
 
 #endif
