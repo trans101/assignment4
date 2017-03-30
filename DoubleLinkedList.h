@@ -54,24 +54,32 @@ DoubleLinkedList<type>:: ~DoubleLinkedList()
 template <class type>
 void DoubleLinkedList<type>:: insertBack(type data)
 {
-	++size;
+	cout << "in list insert back" << endl;
+	
 	IntNode<type> *node = new IntNode<type>(data);
+	cout << "made node" << endl;
 	//if empty then create it
 	if(isEmpty())
 	{
+		cout << "putting first element" << endl;
 		front = node;
 		back = node;
 	}
 	//if not empty then find node that pointer is null
 	else
 	{
+		cout << "inserting after element" << endl;
 		IntNode<type> *current = back;
 		back = node;
 		current->next = node;
 		back->prev = current;
 		back->next = NULL;
+		cout << "put it in" << endl;
 		delete current;
+		cout << "deleted current" << endl;
 	}
+	cout << "after both if/else statements" << endl;
+	++size;
 }
 template <class type>
 void DoubleLinkedList<type>:: insertFront(type data)
@@ -148,8 +156,12 @@ type DoubleLinkedList<type>:: removeBack()
 template <class type>
 bool DoubleLinkedList<type>:: isEmpty()
 {
-	if(size == 0)
+	cout << "in is empty" << endl;
+	if(front==NULL && back == NULL)
+	{
+		cout << "was empty" << endl;
 		return true;
+	}
 	return false;
 }
 template <class type>

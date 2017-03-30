@@ -26,7 +26,7 @@ public:
 	int mSize;
 	int numElements;
 
-	DoubleLinkedList<type> *myQueue;
+	DoubleLinkedList<type> myQueue;
 };
 
 
@@ -52,29 +52,31 @@ DListQueue<type>::~DListQueue()
 template <class type>
 void DListQueue<type>:: insertBack(type data)
 {
-	myQueue->insertBack(data);
+	cout << "inside Queue Insert Back()" << endl;
+	myQueue.insertBack(data);
 	++numElements;
+	cout << "came back from list insert Back" << endl;
 }
 template <class type>
 type DListQueue<type>::removeFront()
 {
-	myQueue->removeFront();
 	--numElements;
+	return myQueue.removeFront();
 }
 template <class type>
 type DListQueue<type>::peekFront()
 {
-	myQueue->getFront();
+	return myQueue.getFront();
 }
 template <class type>
 type DListQueue<type>::peekBack()
 {
-	myQueue->getBack();
+	return myQueue.getBack();
 }
 template <class type>
 int DListQueue<type>::getSize()
 {
-	if(myQueue->size != numElements)
+	if(myQueue.size != numElements)
 		return -1;
 	return numElements;
 }
