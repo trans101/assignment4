@@ -6,28 +6,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
-/*int main(int argc, char** argv)
-{
-	DListQueue<int> *queue = new DListQueue<int>();
-	for(int i = 0; i < 10; ++i)
-	{
-		queue->insertBack(i);
-		cout<< "peek front" << queue->peekBack() << endl;
-	}
-
-	for(int i = 0; i < 10; ++i)
-	{
-		cout << "removed " << queue->removeFront() << endl;
-	}
-	return 0;
-}*/
 int main(int argc, char** argv)
 {
-	int studCount(0), shortWaitTime(0), longWaitTime(0), longIdleWaitTime(0), idleCount(0);
-	float totalWaitTime(0.0);
+	float studCount(0.0), shortWaitTime(0.0), longWaitTime(0.0), longIdleWaitTime(0.0), idleCount(0.0);
+	float totalWaitTime(0.0), totStudWaitCount(0.0);
 	int overTenCount(0);
 
 	DoubleLinkedList<float> *waitTimes = new DoubleLinkedList<float>();
@@ -41,6 +27,7 @@ int main(int argc, char** argv)
 
 	DListQueue<Student> *line = new DListQueue<Student>();
 
+	//get input file
 	string filePath, fileLine;
 	ifstream givenFile;
 
@@ -48,7 +35,6 @@ int main(int argc, char** argv)
 	cin >> filePath;
 
 	givenFile.open(filePath);
-	cout << "Opened file" << endl;
 
 	if(givenFile.fail())
 	{
@@ -60,6 +46,11 @@ int main(int argc, char** argv)
 	try
 	{
 		numWindows = stoi(fileLine);
+		if(numWindows == 0)
+		{
+			cout << "Sorry: Registrar is closed. " << endl;
+			return 0;
+		}
 		openWindows = numWindows;
 	}
 	catch (invalid_argument)
@@ -90,6 +81,12 @@ int main(int argc, char** argv)
 		{
 			return 0;
 		}
+
+		for(int i = 0; i < numWindows; ++i)
+		{
+			windowArray[i] = 0;
+		}
+		shortWaitTime = 0;
 
 		if(!givenFile.eof())
 		{
@@ -149,7 +146,6 @@ int main(int argc, char** argv)
 			for(int idx = 0; idx < studArriving; ++idx)
 			{
 				
-
 				Student *student = new Student();
 				++studCount;
 
@@ -172,8 +168,7 @@ int main(int argc, char** argv)
 
 					student->setTimeAtWindow(timeAtWindow);	
 					
-					line->insertBack(*student); //seems like every time you switch back to functions it calls the student destructor
-					cout << "inserted student " << endl;
+					line->insertBack(*student); 
 				}
 			}
 		}
@@ -187,7 +182,7 @@ int main(int argc, char** argv)
 			{
 				--openWindows;
 				Student movingStud = line->removeFront();
-				cout << "removed student" << endl;
+
 				waitTimes->insertBack(0);
 				
 				//getting wait times
@@ -195,6 +190,7 @@ int main(int argc, char** argv)
 				if(numWindows-1 == openWindows)
 				{
 					shortWaitTime = movingStud.getTimeAtWindow();
+
 				}
 
 				//everyone else filling up open windows
@@ -202,10 +198,13 @@ int main(int argc, char** argv)
 				{
 					if(movingStud.getTimeAtWindow() < shortWaitTime)
 					{
+						
 						shortWaitTime = movingStud.getTimeAtWindow();
+
+
+
 					}
 				}
-
 				windowArray[h] += movingStud.getTimeAtWindow();
 				
 			}
@@ -231,11 +230,14 @@ int main(int argc, char** argv)
 
 				if(windowArray[k] == shortWaitTime)
 				{
+					
 					//add the wait time to our analysis 
 					waitTimes->insertBack(windowArray[k]);
+					++totStudWaitCount;
 					// +=  that with moving students time at window
 					windowArray[k] += movingStud.getTimeAtWindow();
 					shortWaitTime = 0;
+
 				}
 				//get longest wait time
 				else if(windowArray[k] > longWaitTime)
@@ -259,8 +261,6 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-
-
 		//set into idle wait time list
 		for(int i = 0; i < numWindows; ++i)
 		{
@@ -277,24 +277,82 @@ int main(int argc, char** argv)
 				++overFiveIdleCount;
 			}
 		}
+
 	}
 
-
-
-	//calc mean wait time
-	//calc median wait time
-	float totalTimes = 0.0;
-	IntNode<float> *curr = waitTimes->front;
-	while(curr->next != NULL)
+	cout << "Before new stuff" << endl;
+	//copy list to array
+	IntNode<float> *current = waitTimes->front;
+	float waitArray[waitTimes->getSize()];
+	int count = 0;
+	while(current->next != NULL)
 	{
-		totalTimes += curr->data;
-		curr = curr->next;
+		waitArray[count++] = current->data;
+		current = current->next;
 	}
-	cout << "Mean Student Wait Time: " << totalTimes/studCount << endl;
+	current = idleTimes->front;
+	float idleArray[idleTimes->getSize()];
+	count  = 0;
+	while(current->next != NULL)
+	{
+		idleArray[count++] = current->data;
+		current = current->next;
+	}
+
+	delete waitTimes;
+	delete idleTimes;
+
+	int middle, middle2;
+
+	float medianWaitTime(0.0), totalIdleTimes(0), totalWaitTimes(0);
+	float sizeWait(0), sizeIdle(0);
+
+	//account for sizeof function
+	sizeWait = sizeof(waitArray)/4.0;
+	sizeIdle = sizeof(idleArray)/4.0;
+
+	//odd length
+	if ((int)sizeWait%2 != 0)
+		middle = (sizeWait/2)-1;
+	//even length
+	else
+	{
+		middle2 = sizeWait/2;
+	}
+	//get data at that position
+	for(int q = 0; q < sizeWait; ++q)
+	{
+		//calc mean wait time
+		totalWaitTimes += waitArray[q];
+		if(q == middle)
+			medianWaitTime = waitArray[q];
+			
+		else if(q== middle2)
+		{
+			float d1,d2;
+			d1 = waitArray[q];
+			d2 = waitArray[q+1];
+			medianWaitTime = (d1 + d2)/2.0;
+		}
+	}
+
+	for(int p = 0; p < sizeIdle; ++p)
+	{
+			//calc mean wait time
+			totalIdleTimes += idleArray[p];
+	}
+
+	cout << "Mean Student Wait Time: " << (totalWaitTimes/sizeWait) << endl;
+	cout << "Median Student Wait Time: " << medianWaitTime << endl;
 	cout << "Longest Student Wait Time: " << longWaitTime << endl;
 	cout << "Number of Students Waiting Over 10 Mins: " << overTenCount << endl;
-
-
+	cout << "Mean Window Idle Time: " << (totalIdleTimes/sizeIdle) << endl;
+	cout << "Longest Window Idle Time: " << longIdleWaitTime << endl;
+	cout << "Number of Windows Idle Over 5 Mins: " << overFiveIdleCount << endl;
 
 	return 0;
-}//end of main
+}
+//end of main
+
+
+
